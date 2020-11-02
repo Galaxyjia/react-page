@@ -14,7 +14,6 @@ import {
 } from '../hooks';
 import ErrorCell from './ErrorCell';
 import Inner from './Inner';
-import Resizable from './Resizable';
 import scrollIntoViewWithOffset from './utils/scrollIntoViewWithOffset';
 
 const gridClass = ({
@@ -73,7 +72,6 @@ const Cell: React.FC<Props> = ({ nodeId, rowWidth }) => {
     isDraft,
     isDraftI18n,
     size,
-    resizable,
   } = useCellProps(
     nodeId,
     (
@@ -85,12 +83,6 @@ const Cell: React.FC<Props> = ({ nodeId, rowWidth }) => {
       isDraft,
       isDraftI18n,
       size,
-      // resizable is true if this node is not the only child and not the last child
-      resizable:
-        isRow(ancestors[0]) &&
-        ancestors[0].cells.length > 1 &&
-        ancestors[0].cells.findIndex((c) => c.id === nodeId) !==
-          ancestors[0].cells.length - 1,
     })
   );
 
@@ -99,7 +91,6 @@ const Cell: React.FC<Props> = ({ nodeId, rowWidth }) => {
   const isResizeMode = useIsResizeMode();
   const isEditMode = useIsEditMode();
   const isLayoutMode = useIsLayoutMode();
-  const { allowResizeInEditMode } = useOptions();
 
   const isDraftInLang = isDraftI18n?.[lang] ?? isDraft;
   const ref = React.useRef<HTMLDivElement>();
@@ -136,13 +127,7 @@ const Cell: React.FC<Props> = ({ nodeId, rowWidth }) => {
       onClick={stopClick(isEditMode)}
     >
       <CellErrorGate nodeId={nodeId}>
-        {resizable && (isResizeMode || allowResizeInEditMode) && rowWidth ? (
-          <Resizable rowWidth={rowWidth} nodeId={nodeId} steps={12}>
-            <Inner nodeId={nodeId} />
-          </Resizable>
-        ) : (
-          <Inner nodeId={nodeId} />
-        )}
+        <Inner nodeId={nodeId} />
       </CellErrorGate>
     </div>
   );

@@ -317,14 +317,18 @@ export const useSetDraft = (id: string) => {
   );
 };
 
-export const useResizeCell = (id: string) => {
+export const useResizeCellById = () => {
   const dispatch = useDispatch();
-  return useCallback((size: number) => dispatch(resizeCell(id)(size)), [
-    dispatch,
-    id,
-  ]);
+  return useCallback(
+    (nodeId: string, size: number) => dispatch(resizeCell(nodeId)(size)),
+    [dispatch]
+  );
 };
 
+export const useResizeCell = (id: string) => {
+  const resizeById = useResizeCellById();
+  return useCallback((size: number) => resizeById(id, size), [resizeById, id]);
+};
 export const useSetLang = () => {
   const dispatch = useDispatch();
   return useCallback((lang: string) => dispatch(setLang(lang)), [dispatch]);
